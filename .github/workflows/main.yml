@@ -1,0 +1,28 @@
+name: Pull and Restart Service on Server
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to the `main` branch
+
+jobs:
+  pull-and-restart:
+    runs-on: ubuntu-latest  # Runner type, you can choose your preferred environment.
+
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Pull the latest code from the main branch (optional step, as the code is already checked out)
+      - name: Pull latest changes
+        run: |
+          git pull origin main
+
+      # Restart the service on the remote server
+      - name: Restart service on server
+        run: |
+          ssh -o StrictHostKeyChecking=no user@your-server.com 'sudo systemctl restart your-service-name'
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
